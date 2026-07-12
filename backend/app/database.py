@@ -19,6 +19,8 @@ engine = create_engine(
 
 print("Current working directory:", Path.cwd())
 print("Database path:", Path("data/company.db").resolve())
+
+
 SessionLocal = sessionmaker(
     autocommit=False,
     autoflush=False,
