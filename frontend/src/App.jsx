@@ -7,6 +7,31 @@ function App() {
   const [question, setQuestion] = useState("");
   const [generatedSQL, setGeneratedSQL] = useState("");
   const [results, setResults] = useState([]);
+  const [uploadMessage, setUploadMessage] = useState("");
+
+  const handleUploadDb = async (file) => {
+    const formData = new FormData();
+    formData.append("file", file);
+
+    try {
+      const response = await fetch("http://127.0.0.1:8000/upload-db", {
+        method: "POST",
+        body: formData,
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.detail || "Upload failed");
+      }
+
+      setUploadMessage(`Uploaded: ${data.filename}`);
+    } catch (error) {
+      console.error("Upload error:", error);
+      setUploadMessage("Database upload failed.");
+    }
+  };
+
   const handleSubmit = async () => {
     if (!question.trim()) return;
 
@@ -38,7 +63,9 @@ function App() {
         question={question}
         setQuestion={setQuestion}
         onSubmit={handleSubmit}
+        onUploadDb={handleUploadDb}
       />
+      {uploadMessage && <p>{uploadMessage}</p>}
       <ResultsTable generatedSQL={generatedSQL} results={results} />
     </div>
   );

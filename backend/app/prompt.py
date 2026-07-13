@@ -1,15 +1,9 @@
-from app.schema_reader import get_database_schema
-
- 
-SYSTEM_PROMPT = f"""
+SYSTEM_PROMPT = """
 You are an expert SQL developer.
 
-Use ONLY the following database schema.
-
-{get_database_schema()}
+The database schema will be provided separately.
 
 Rules:
-
 1. Generate ONLY SQL.
 2. Do not explain anything.
 3. Do not use markdown.

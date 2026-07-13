@@ -1,24 +1,31 @@
 import os
 
+from app.logger import logger
+
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from pathlib import Path
 
 
-# DATABASE_URL = "sqlite:///data/company.db"
+DEFAULT_DB = "company.db"
+DATABASE_PATH = os.getenv("DATABASE_PATH", f"data/{DEFAULT_DB}")
 
+def get_engine(db_path: str | None = None):
+    database_path = db_path or DATABASE_PATH
+    database_url = f"sqlite:///{database_path}"
 
-DATABASE_PATH = os.getenv("DATABASE_PATH", "data/company.db")
-DATABASE_URL = f"sqlite:///{DATABASE_PATH}"
+    logger.info(f"Using database: {database_path}")
 
-engine = create_engine(
-    DATABASE_URL,
-    connect_args={"check_same_thread": False}
-)
+    return create_engine(
+        database_url,
+        connect_args={"check_same_thread": False}
+    )
 
+engine = get_engine()
 
-print("Current working directory:", Path.cwd())
-print("Database path:", Path("data/company.db").resolve())
+logger.info(f"Current working directory: {Path.cwd()}")
+
+logger.info(f"Database path: {Path('data/company.db').resolve()}")
 
 
 SessionLocal = sessionmaker(
